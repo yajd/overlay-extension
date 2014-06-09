@@ -116,7 +116,12 @@ function setOverlayIcon(aIconURL) {
 // This should only be called if gActiveWindow is non-null
 function updateOverlayIcon() {
   // aka magic
-  let docshell = gActiveWindow.QueryInterface(Ci.nsIInterfaceRequestor)
+let XULWindows = Services.wm.getXULWindowEnumerator(null);
+while (XULWindows.hasMoreElements()) {
+let aXULWindow = XULWindows.getNext();
+let aDOMWindow = aXULWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowInternal || Ci.nsIDOMWindow);
+
+let docshell = aDOMWindow.QueryInterface(Ci.nsIInterfaceRequestor)
     .getInterface(Ci.nsIWebNavigation).QueryInterface(Ci.nsIDocShellTreeItem)
     .treeOwner.QueryInterface(Ci.nsIInterfaceRequestor)
     .getInterface(Ci.nsIXULWindow).docShell;
@@ -131,6 +136,9 @@ function updateOverlayIcon() {
   else {
     controller.setOverlayIcon(null, "");
   }
+
+}
+
 }
 
 function install() {
